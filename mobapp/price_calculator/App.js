@@ -1,52 +1,128 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { FlatList, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, FlatList, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from './Colors';
 import tempData from './TempData';
-import ItemList from './components/ItemList';
+import {AntDesign} from "@expo/vector-icons";
 import TableHeader from './components/TableHeader';
+import AddItemModal from './components/AddItemModal';
 
-export default function App() {
-
-  return (
-    <View style={styles.container}>
-      {/* Title */}
-      <View style={{flexDirection: "row", marginBottom: 60}}>
-          <View style={styles.divider} />
-          <Text style={styles.title}>
-            PR<Text style={{color: colors.green}}>$</Text>CE
-            <Text style={{fontWeight: "normal", color: colors.green}}> CALCULATOR</Text>
-          </Text>
-          <View style={styles.divider} />
-      </View>
-
-      {/* TABLE */}
-      <View style={styles.table}>
-        {/* Header */}
-        <TableHeader />
-        {/* Content */}
-        <View style={{height: 350, padding:0}}>
-          <FlatList
-            data={tempData}
-            keyExtractor={item => item.name}
-            renderItem={({item}) => (
-              <ItemList list={item} />
-            )}
-          />
+const Item = ({item, deleteItem}) => {
+  const total = item.price * item.quantity;
+  return(
+    <View style={styles.itemContainer}>
+        <View style={[{width: 160, backgroundColor: colors.white}, styles.item]}>
+            <Text>{item.name}</Text>
         </View>
-      </View>
-
-      <Text> Sub Total: $0.00</Text>
-
-      {/* Add List */}
-      <TouchableOpacity 
-          style={styles.addListBtn}
-      >
-          <Text style={{color:colors.white, fontWeight: "bold", margin: 10, fontSize:18}}>+ Add Item</Text>
-      </TouchableOpacity>
-      <StatusBar style="auto" />
+        <View style={[{width: 60, backgroundColor: colors.lightGrey}, styles.item]}>
+            <Text>$ {item.price}</Text>
+        </View>
+        <View style={[{width: 60, backgroundColor: colors.lightGrey}, styles.item]}>
+            <Text>{item.quantity}</Text>
+        </View>
+        <View style={[{width: 60, backgroundColor: colors.lightGrey}, styles.item]}>
+            <Text>$ {total}</Text>
+        </View>
+        <TouchableOpacity 
+            style={styles.delete}
+            onPress = {deleteItem}
+        >
+            <AntDesign name="close" size={20} color={colors.white} />
+        </TouchableOpacity>    
     </View>
-  );
+  )
+}
+
+export default class App extends React.Component {  
+  constructor(){
+    super();
+    this.addTotalPrice = this.addTotalPrice.bind(this)
+  }
+
+  state = {
+    addTodoVisible: false,
+    totalPrice: 86.32
+  }
+
+  addTotalPrice(value){
+    const updatedTotalPrice = this.state.totalPrice + value;
+    this.setState({totalPrice: updatedTotalPrice});
+  }
+
+  toggleAddTodoModal(){
+    this.setState({addTodoVisible: !this.state.addTodoVisible});
+  }
+
+  deleteItem = (index) => {
+    const temp = this.state.totalPrice - tempData[index].price * tempData[index].quantity;
+    const updatedTotalPrice = Math.round((Number.EPSILON + temp) * 100) / 100;
+    this.setState({totalPrice: updatedTotalPrice});
+    tempData.splice(index, 1);
+    this.forceUpdate();
+  }
+
+  renderItem = ({item}) => {
+    const total = item.price * item.quantity;
+    this.tempTotalPrice += total;
+    return(
+      <Item 
+        item={item}
+        deleteItem={() => this.deleteItem(tempData.indexOf(item))}
+      />
+    )
+  }
+
+  render() {
+    return(
+      <View style={styles.container}>
+        {/* Modal */}
+        <Modal 
+          animationType="slide" 
+          visible={this.state.addTodoVisible} 
+          onRequestClose={() => this.toggleAddTodoModal()}>
+          <AddItemModal 
+            closeModal={() => this.toggleAddTodoModal()}
+            addTotalPrice={this.addTotalPrice}
+          />
+        </Modal>
+
+        {/* Title */}
+        <View style={{flexDirection: "row", marginBottom: 60}}>
+            <View style={styles.divider} />
+            <Text style={styles.title}>
+              PR<Text style={{color: colors.green}}>$</Text>CE
+              <Text style={{fontWeight: "normal", color: colors.green}}> CALCULATOR</Text>
+            </Text>
+            <View style={styles.divider} />
+        </View>
+
+        {/* TABLE */}
+        <View style={styles.table}>
+          {/* Header */}
+          <TableHeader />
+          {/* Content */}
+          <View style={{height: 350, padding:0}}>
+            <FlatList
+              data={tempData}
+              keyExtractor={item => item.name}
+              renderItem={this.renderItem}
+            />
+          </View>
+        </View>
+
+        <Text> Sub Total: $ {this.state.totalPrice}</Text>
+
+        {/* Add List */}
+        <TouchableOpacity 
+            style={styles.addListBtn}
+            onPress={() => this.toggleAddTodoModal()}
+        >
+            <Text style={{color:colors.white, fontWeight: "bold", margin: 10, fontSize:18}}>+ Add Item</Text>
+        </TouchableOpacity>
+        <StatusBar style="auto" />
+      </View>
+    );
+  };
 }
 
 const styles = StyleSheet.create({
@@ -93,6 +169,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     alignItems: "center",
     width: 400
-  }
+  },
+
+  itemContainer:{
+    flexDirection: "row",
+    width: 400,
+    alignItems:"center",
+    marginBottom: 5,
+    justifyContent: "flex-start"
+},
+item:{
+    paddingVertical: 15,
+    marginHorizontal:2,
+    alignItems: "center",
+    borderRadius: 10
+},
+delete: {
+    backgroundColor: "red",
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    marginLeft: 4,
+    // position: "absolute",
+    // right: 5,
+    borderRadius: 10
+    
+}
   
 });
