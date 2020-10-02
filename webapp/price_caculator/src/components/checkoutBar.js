@@ -1,4 +1,5 @@
 import React from 'react';
+import "../styling/checkoutBar.css"
 
 
 class CheckoutBar extends React.Component {
@@ -7,7 +8,7 @@ class CheckoutBar extends React.Component {
         this.count = 0;
     }
     
-    state = {name: "", quantity: 0, price: 0, discount: 1, id: null};
+    state = {name: "", quantity: 1, price: 0, discount: 100, id: null};
 
 
     onButtonClick = event => {
@@ -15,23 +16,29 @@ class CheckoutBar extends React.Component {
         this.count += 1;
     };
 
+    onButtonClear = event => {
+        this.props.onClear(this.count);
+        this.count = 0;
+    };
+
     render() {
         return (
                 <div className="ui segment">
                     <form className="ui form" onSubmit={e => e.preventDefault()}>
-                        <label for="name"> put your item here: </label>
-                        <input type = "text" style = {{marginRight: '15px'}} value={this.state.name} onChange={e => this.setState({name: e.target.value})}/>
+                        <label className="labels" for="name"> put your item here: </label>
+                        <input required type = "text" style = {{marginRight: '15px'}} value={this.state.name} onChange={e => this.setState({name: e.target.value})}/>
 
-                        <label for="name"> set quantity: </label>
-                        <input type = "text" style = {{marginRight: '15px'}} value={this.state.quantity} onChange={e => this.setState({quantity: e.target.value})}/>
+                        <label className="labels" for="name"> set quantity: </label>
+                        <input required type = "number" style = {{marginRight: '15px'}} value={this.state.quantity} onChange={e => this.setState({quantity: e.target.value})}/>
 
-                        <label for="name"> set price: </label>
-                        <input type = "text" style = {{marginRight: '15px'}} value={this.state.price} onChange={e => this.setState({price: e.target.value})}/>
+                        <label className="labels" for="name"> set price: </label>
+                        <input required type = "number" style = {{marginRight: '15px'}} value={this.state.price} onChange={e => this.setState({price: e.target.value})}/>
 
-                        <label for="name"> set discount rate: </label>
-                        <input type = "text" style = {{marginRight: '15px'}} value={this.state.discount} onChange={e => this.setState({discount: e.target.value})}/>
+                        <label className="labels" for="name"> set discount rate %: </label>
+                        <input min="0" max="100" required type = "number" style = {{marginRight: '15px'}} value={this.state.discount} onChange={e => this.setState({discount: e.target.value})}/>
 
-                        <button variant="contained" className="ui button" style = {{marginTop: '15px'}} onClick={this.onButtonClick}>Add</button>
+                        <button variant="contained" className="ui button" style = {{marginTop: '15px', backgroundColor:'lightgreen'}} onClick={this.onButtonClick}>Add</button>
+                        <button variant="contained" className="ui button" style = {{marginTop: '15px', backgroundColor:'vintage'}} onClick={this.onButtonClear}>clear</button>
                     </form>
                 </div>
                 

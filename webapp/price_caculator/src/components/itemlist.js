@@ -3,7 +3,7 @@ import React from 'react';
 class MainBoard extends React.Component {
     render() {
         return (
-            <div style = {{borderColor: 'blue'}}> 
+            <div className="ui segment" style = {{backgroundColor: "lightblue"}}> 
                 items:
                 
             </div>

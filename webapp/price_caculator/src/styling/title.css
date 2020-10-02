@@ -1,0 +1,12 @@
+.titleColor {
+    color: orange;
+    background-color: powderblue;
+    animation: color-change 1s infinite;
+    text-indent: 15cm;
+}  
+
+@keyframes color-change {
+    0% { color: red; }
+    50% { color: blue; }
+    100% { color: green; }
+  }
