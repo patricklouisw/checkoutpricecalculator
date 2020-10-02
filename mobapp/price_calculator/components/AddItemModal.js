@@ -60,7 +60,7 @@ export default class AddListModal extends React.Component {
                         style={[styles.create, {backgroundColor: colors.green}]}
                         onPress={this.createItem}
                     >
-                        <Text style={{color:colors.white, fontWeight: "bold"}}>Create</Text>
+                        <Text style={{color:colors.white, fontWeight: "bold"}}>Add Item</Text>
                     </TouchableOpacity>
                 </View>
             </View> 

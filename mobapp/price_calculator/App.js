@@ -1,11 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { Modal, FlatList, KeyboardAvoidingView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Modal, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import colors from './Colors';
 import tempData from './TempData';
 import {AntDesign} from "@expo/vector-icons";
 import TableHeader from './components/TableHeader';
 import AddItemModal from './components/AddItemModal';
+import CheckOutModal from './components/CheckOutModal';
 
 const Item = ({item, deleteItem}) => {
   const total = item.price * item.quantity;
@@ -41,16 +42,22 @@ export default class App extends React.Component {
 
   state = {
     addTodoVisible: false,
+    checkOutVisible: false,
     totalPrice: 86.32
   }
 
   addTotalPrice(value){
-    const updatedTotalPrice = this.state.totalPrice + value;
+    const temp = this.state.totalPrice + value;
+    const updatedTotalPrice = Math.round((Number.EPSILON + temp) * 100) / 100;
     this.setState({totalPrice: updatedTotalPrice});
   }
 
   toggleAddTodoModal(){
     this.setState({addTodoVisible: !this.state.addTodoVisible});
+  }
+
+  toggleCheckOutModal(){
+    this.setState({checkOutVisible: !this.state.checkOutVisible});
   }
 
   deleteItem = (index) => {
@@ -72,6 +79,14 @@ export default class App extends React.Component {
     )
   }
 
+  eraseAllItem = () =>{
+    const length = tempData.length;
+    this.setState({totalPrice: 0});
+    tempData.splice(0, length);
+    this.toggleCheckOutModal();
+    this.forceUpdate();
+  }
+
   render() {
     return(
       <View style={styles.container}>
@@ -83,6 +98,17 @@ export default class App extends React.Component {
           <AddItemModal 
             closeModal={() => this.toggleAddTodoModal()}
             addTotalPrice={this.addTotalPrice}
+          />
+        </Modal>
+
+        <Modal 
+          animationType="slide" 
+          visible={this.state.checkOutVisible} 
+          onRequestClose={() => this.toggleCheckOutModal()}>
+          <CheckOutModal 
+            closeModal={() => this.toggleCheckOutModal()}
+            totalPrice={this.state.totalPrice}
+            eraseAllItem={() => this.eraseAllItem()}
           />
         </Modal>
 
@@ -110,15 +136,27 @@ export default class App extends React.Component {
           </View>
         </View>
 
-        <Text> Sub Total: $ {this.state.totalPrice}</Text>
-
-        {/* Add List */}
-        <TouchableOpacity 
-            style={styles.addListBtn}
+        <Text style={{fontSize:30, marginTop:15}}> Total: $ {this.state.totalPrice}</Text>
+        {/* Add List */}        
+        
+        <View style={styles.buttons}>
+          <TouchableOpacity 
+            style={[styles.addListBtn, {backgroundColor: colors.green}]}
             onPress={() => this.toggleAddTodoModal()}
-        >
+          >
             <Text style={{color:colors.white, fontWeight: "bold", margin: 10, fontSize:18}}>+ Add Item</Text>
-        </TouchableOpacity>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.addListBtn, {backgroundColor: colors.yellow}]}
+            onPress={() => this.toggleCheckOutModal()}
+          >
+            <Text style={{color:colors.white, fontWeight: "bold", margin: 10, fontSize:20}}>
+              Checkout  <AntDesign name="rightcircle" size={22} color="white" />
+            </Text>
+          </TouchableOpacity>
+        </View>
+        
         <StatusBar style="auto" />
       </View>
     );
@@ -144,16 +182,20 @@ const styles = StyleSheet.create({
     color: colors.black,
     paddingHorizontal:20,
   },
-  addListBtn:{
+  buttons:{
+    flexDirection:"row",
     position: "absolute",
-    bottom: 10,
-    backgroundColor: colors.green,
-    paddingHorizontal: 32,
+    bottom: 20,
+    alignSelf:"center",
+    justifyContent:"space-between"
+  },
+  addListBtn:{
+    marginHorizontal: 5,
     alignItems: "center",
-    borderWidth: StyleSheet.hairlineWidth,
+    justifyContent:"center",
     borderRadius: 50,
-    height: 50,
-    width: 350
+    height: 55,
+    width: 175
   },
   table: {
     paddingTop: 45,
