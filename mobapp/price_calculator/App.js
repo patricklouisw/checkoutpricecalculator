@@ -37,19 +37,25 @@ const Item = ({item, deleteItem}) => {
 export default class App extends React.Component {  
   constructor(){
     super();
-    this.addTotalPrice = this.addTotalPrice.bind(this)
+    this.onSuccess = this.onSuccess.bind(this)
   }
 
   state = {
+    next_id: 10,
     addTodoVisible: false,
     checkOutVisible: false,
     totalPrice: 86.32
   }
 
-  addTotalPrice(value){
+  onSuccess(value){
+    // Update Price
     const temp = this.state.totalPrice + value;
     const updatedTotalPrice = Math.round((Number.EPSILON + temp) * 100) / 100;
     this.setState({totalPrice: updatedTotalPrice});
+
+    // Update next id
+    const next_id = this.state.next_id + 1
+    this.setState({next_id: next_id});
   }
 
   toggleAddTodoModal(){
@@ -96,8 +102,9 @@ export default class App extends React.Component {
           visible={this.state.addTodoVisible} 
           onRequestClose={() => this.toggleAddTodoModal()}>
           <AddItemModal 
+            next_id={this.state.next_id}
             closeModal={() => this.toggleAddTodoModal()}
-            addTotalPrice={this.addTotalPrice}
+            onSuccess={this.onSuccess}
           />
         </Modal>
 
@@ -130,7 +137,7 @@ export default class App extends React.Component {
           <View style={{height: 350, padding:0}}>
             <FlatList
               data={tempData}
-              keyExtractor={item => item.name}
+              keyExtractor={item => item.id}
               renderItem={this.renderItem}
             />
           </View>

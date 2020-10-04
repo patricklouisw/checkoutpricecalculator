@@ -9,15 +9,17 @@ export default class AddListModal extends React.Component {
     state = {
         name: "",
         price: 0,
-        quantity: 0
+        quantity: 1
     }
 
     createItem = () => {
+        const id = this.props.next_id;
         const name = this.state.name;
         const price = Math.round((Number.EPSILON + this.state.price) * 100) / 100
         const quantity = this.state.quantity;
         
         tempData.push({
+            id,
             name,
             price,
             quantity
@@ -26,7 +28,7 @@ export default class AddListModal extends React.Component {
         const total = this.state.price * this.state.quantity;
 
         this.setState({name: "", price: 0, quantity: 0});
-        this.props.addTotalPrice(total);
+        this.props.onSuccess(total);
         this.props.closeModal();
     }
 
