@@ -137,7 +137,7 @@ export default class App extends React.Component {
           <View style={{height: 350, padding:0}}>
             <FlatList
               data={tempData}
-              keyExtractor={item => item.id}
+              keyExtractor={item => item.id.toString()}
               renderItem={this.renderItem}
             />
           </View>
