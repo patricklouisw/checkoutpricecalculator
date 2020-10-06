@@ -21,8 +21,10 @@ export default class DBAddItemModal extends React.Component {
         const a = this.isInt(price);
         const b = this.isFloat(price);
         const c = this.isInt(quantity);
+        const d = this.isFloat(quantity);
 
-        if((a || b) && c ){
+
+        if((a || b) && (c || d)){
             const total = this.state.price * this.state.quantity;
 
             this.setState({name: "", price: 0, quantity: 0});

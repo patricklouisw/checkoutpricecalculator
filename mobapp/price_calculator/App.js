@@ -54,8 +54,8 @@ export default class App extends React.Component {
       checkOutVisible: false,
       dbConnectVisible: false,
 
-      next_id: 10,
-      totalPrice: 86.32,
+      next_id: 1,
+      totalPrice: 0
       
     }
   }
