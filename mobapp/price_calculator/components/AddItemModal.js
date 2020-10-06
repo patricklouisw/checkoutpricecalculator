@@ -23,7 +23,7 @@ export default class AddListModal extends React.Component {
         const c = this.isInt(quantity);
         const d = this.isFloat(quantity);
 
-        if((a || b) && (c || d) ){
+        if((a || b) && (c || d)){
             tempData.push({
                 id,
                 name,
@@ -33,10 +33,11 @@ export default class AddListModal extends React.Component {
     
             const total = this.state.price * this.state.quantity;
     
-            this.setState({name: "", price: 0, quantity: 0});
+            this.setState({name: "", price: 0, quantity: 1});
             this.props.onSuccess(total);
             this.props.closeModal();
         } else {
+            this.setState({name: "", price: 0, quantity: 1});
             alert("Invalid Input!");
         }
         

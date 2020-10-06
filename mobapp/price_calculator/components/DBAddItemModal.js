@@ -67,7 +67,7 @@ export default class DBAddItemModal extends React.Component {
                         style={styles.input} 
                         placeholder="Quantity" 
                         keyboardType = 'numeric'
-                        onChangeText={text => this.setState({quantity: Math.floor(text)})} 
+                        onChangeText={text => this.setState({quantity: text})} 
                     />
                     <TouchableOpacity 
                         style={[styles.create, {backgroundColor: colors.green}]}
