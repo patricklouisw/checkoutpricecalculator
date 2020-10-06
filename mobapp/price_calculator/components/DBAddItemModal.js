@@ -4,41 +4,33 @@ import {AntDesign} from '@expo/vector-icons';
 import colors from "../Colors";
 import tempData from "../TempData";
 
-export default class AddListModal extends React.Component {
+export default class DBAddItemModal extends React.Component {
     
     state = {
         name: "",
         price: 0,
-        quantity: 1
+        quantity: 1,
+        discount: 0
     }
 
     createItem = () => {
-        const id = this.props.next_id;
         const name = this.state.name;
         const price = Math.round((Number.EPSILON + this.state.price) * 100) / 100
         const quantity = this.state.quantity;
-        
+
         const a = this.isInt(price);
         const b = this.isFloat(price);
         const c = this.isInt(quantity);
 
         if((a || b) && c ){
-            tempData.push({
-                id,
-                name,
-                price,
-                quantity
-            });
-    
             const total = this.state.price * this.state.quantity;
-    
+
             this.setState({name: "", price: 0, quantity: 0});
-            this.props.onSuccess(total);
+            this.props.dbAddItem(name, price, quantity, total);
             this.props.closeModal();
         } else {
             alert("Invalid Input!");
         }
-        
     }
 
     isInt(n){
