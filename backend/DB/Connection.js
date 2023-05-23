@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const URI = "mongodb+srv://pat:pat123@pricecalc.m3dlm.mongodb.net/<dbname>?retryWrites=true&w=majority";
+# Add your own const URI with MongoDB API key
 
 const connectDB = async () => {
     await mongoose.connect(URI, {
